@@ -1,5 +1,7 @@
 package com.workflow.workflow.service;
 
+import com.workflow.workflow.dto.EmployeeRequestDto;
+import com.workflow.workflow.dto.EmployeeResponseDto;
 import com.workflow.workflow.entity.Employee;
 import com.workflow.workflow.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -10,62 +12,125 @@ import java.util.Optional;
 /**
  * Service layer for Employee-related business operations.
  *
- * The Service layer sits between the Controller and Repository.
- *
- * Controller
- *     ↓
- * EmployeeService
- *     ↓
- * EmployeeRepository
- *     ↓
- * PostgreSQL
+ * Responsibilities:
+ * - Handle business logic
+ * - Convert DTOs to Entities
+ * - Convert Entities to DTOs
+ * - Communicate with Repository
  */
 @Service
 public class EmployeeService {
 
-    /*
-     * EmployeeRepository is injected through the constructor.
-     *
-     * Constructor injection is preferred because:
-     * 1. The dependency is required for this class to work.
-     * 2. It makes the class easier to test.
-     * 3. The dependency can be final.
-     */
     private final EmployeeRepository employeeRepository;
 
+    // Constructor injection.
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
     /**
-     * Get all employees from the database.
+     * Get all employees.
      */
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeResponseDto> getAllEmployees() {
+
+        return employeeRepository.findAll()
+                .stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
     /**
-     * Get a single employee by ID.
-     *
-     * Optional is used because the employee may not exist.
+     * Get employee by ID.
      */
-    public Optional<Employee> getEmployeeById(Long id) {
-        return employeeRepository.findById(id);
+    public Optional<EmployeeResponseDto> getEmployeeById(Long id) {
+
+        return employeeRepository.findById(id)
+                .map(this::convertToResponseDto);
     }
 
     /**
-     * Create a new employee or update an existing employee.
-     *
-     * JpaRepository.save() handles both operations.
+     * Create a new employee.
      */
-    public Employee saveEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeResponseDto createEmployee(EmployeeRequestDto requestDto) {
+
+        Employee employee = convertToEntity(requestDto);
+
+        Employee savedEmployee = employeeRepository.save(employee);
+
+        return convertToResponseDto(savedEmployee);
     }
 
     /**
-     * Delete an employee using its ID.
+     * Update an existing employee.
      */
-    public void deleteEmployee(Long id) {
+    public Optional<EmployeeResponseDto> updateEmployee(
+            Long id,
+            EmployeeRequestDto requestDto) {
+
+        return employeeRepository.findById(id)
+                .map(existingEmployee -> {
+
+                    existingEmployee.setName(requestDto.getName());
+                    existingEmployee.setEmail(requestDto.getEmail());
+                    existingEmployee.setPhone(requestDto.getPhone());
+                    existingEmployee.setDepartment(requestDto.getDepartment());
+                    existingEmployee.setDesignation(requestDto.getDesignation());
+                    existingEmployee.setJoiningDate(requestDto.getJoiningDate());
+                    existingEmployee.setSalary(requestDto.getSalary());
+
+                    Employee updatedEmployee =
+                            employeeRepository.save(existingEmployee);
+
+                    return convertToResponseDto(updatedEmployee);
+                });
+    }
+
+    /**
+     * Delete employee by ID.
+     */
+    public boolean deleteEmployee(Long id) {
+
+        if (!employeeRepository.existsById(id)) {
+            return false;
+        }
+
         employeeRepository.deleteById(id);
+
+        return true;
+    }
+
+    /**
+     * Convert Request DTO → Entity.
+     */
+    private Employee convertToEntity(EmployeeRequestDto dto) {
+
+        Employee employee = new Employee();
+
+        employee.setName(dto.getName());
+        employee.setEmail(dto.getEmail());
+        employee.setPhone(dto.getPhone());
+        employee.setDepartment(dto.getDepartment());
+        employee.setDesignation(dto.getDesignation());
+        employee.setJoiningDate(dto.getJoiningDate());
+        employee.setSalary(dto.getSalary());
+
+        return employee;
+    }
+
+    /**
+     * Convert Entity → Response DTO.
+     */
+    private EmployeeResponseDto convertToResponseDto(Employee employee) {
+
+        return new EmployeeResponseDto(
+                employee.getId(),
+                employee.getName(),
+                employee.getEmail(),
+                employee.getPhone(),
+                employee.getDepartment(),
+                employee.getDesignation(),
+                employee.getJoiningDate(),
+                employee.getSalary()
+        );
     }
 }
