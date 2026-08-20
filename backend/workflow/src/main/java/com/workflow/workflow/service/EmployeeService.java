@@ -3,6 +3,7 @@ package com.workflow.workflow.service;
 import com.workflow.workflow.dto.EmployeeRequestDto;
 import com.workflow.workflow.dto.EmployeeResponseDto;
 import com.workflow.workflow.entity.Employee;
+import com.workflow.workflow.exception.ResourceNotFoundException;
 import com.workflow.workflow.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +42,20 @@ public class EmployeeService {
 
     /**
      * Get employee by ID.
+     *
+     * If the employee does not exist, throw a custom exception.
+     * GlobalExceptionHandler will convert it into HTTP 404.
      */
-    public Optional<EmployeeResponseDto> getEmployeeById(Long id) {
+    public EmployeeResponseDto getEmployeeById(Long id) {
 
-        return employeeRepository.findById(id)
-                .map(this::convertToResponseDto);
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Employee not found with id: " + id
+                        )
+                );
+
+        return convertToResponseDto(employee);
     }
 
     /**

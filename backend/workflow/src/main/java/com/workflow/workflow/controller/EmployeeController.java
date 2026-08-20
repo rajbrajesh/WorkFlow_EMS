@@ -43,18 +43,23 @@ public class EmployeeController {
         );
     }
 
+    
     /**
      * GET /api/employees/{id}
      *
      * Get employee by ID.
+     *
+     * If employee doesn't exist, the Service throws
+     * ResourceNotFoundException and the global handler
+     * returns HTTP 404.
      */
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeResponseDto> getEmployeeById(
             @PathVariable Long id) {
 
-        return employeeService.getEmployeeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(
+                employeeService.getEmployeeById(id)
+        );
     }
 
     /**
