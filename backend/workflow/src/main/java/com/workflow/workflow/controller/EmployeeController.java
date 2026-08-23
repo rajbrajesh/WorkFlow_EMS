@@ -4,6 +4,7 @@ import com.workflow.workflow.dto.EmployeeRequestDto;
 import com.workflow.workflow.dto.EmployeeResponseDto;
 import com.workflow.workflow.service.EmployeeService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class EmployeeController {
         );
     }
 
-    
+
     /**
      * GET /api/employees/{id}
      *
@@ -77,7 +78,9 @@ public class EmployeeController {
         EmployeeResponseDto response =
                 employeeService.createEmployee(requestDto);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     /**

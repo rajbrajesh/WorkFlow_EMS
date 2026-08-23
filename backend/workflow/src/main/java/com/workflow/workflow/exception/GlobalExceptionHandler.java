@@ -89,4 +89,24 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(apiError);
     }
+
+    /**
+     * Handles duplicate resource conflicts.
+     *
+     * HTTP 409 means the request conflicts with
+     * the current state of the resource.
+     */
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiError> handleDuplicateResourceException(
+            DuplicateResourceException exception) {
+
+        ApiError apiError = new ApiError(
+                HttpStatus.CONFLICT.value(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(apiError);
+    }
 }

@@ -18,5 +18,19 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    /**
+     * Checks whether an employee with the given email exists.
+     *
+     * Spring Data JPA generates the required query automatically
+     * from the method name.
+     */
+    boolean existsByEmail(String email);
 
+    /**
+     * Checks whether another employee is already using
+     * the given email.
+     *
+     * The current employee ID is excluded from the check.
+     */
+    boolean existsByEmailAndIdNot(String email, Long id);
 }
