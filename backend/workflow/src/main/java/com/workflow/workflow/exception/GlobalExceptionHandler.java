@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.workflow.workflow.exception.InvalidCredentialsException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,6 +108,26 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(apiError);
+    }
+
+    /**
+     * Handles invalid login credentials.
+     *
+     * HTTP 401 means the client has not provided
+     * valid authentication credentials.
+     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiError> handleInvalidCredentialsException(
+            InvalidCredentialsException exception) {
+
+        ApiError apiError = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(apiError);
     }
 }
