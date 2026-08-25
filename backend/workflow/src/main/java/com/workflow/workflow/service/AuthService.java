@@ -25,15 +25,15 @@ public class AuthService {
     /**
      * Constructor injection.
      *
-     * BCryptPasswordEncoder is created here for now.
-     * Later, when we introduce Spring Security configuration,
-     * we'll manage it as a Spring Bean.
+     * BCryptPasswordEncoder is provided by Spring's
+     * Application Context.
      */
-    public AuthService(UserRepository userRepository) {
+    public AuthService(
+            UserRepository userRepository,
+            BCryptPasswordEncoder passwordEncoder) {
 
         this.userRepository = userRepository;
-
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
