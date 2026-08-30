@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * Main Spring Security configuration.
@@ -14,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * without implementing JWT yet.
  */
 @Configuration
+@EnableConfigurationProperties(JwtConfig.class)
 public class SecurityConfig {
 
     /**
