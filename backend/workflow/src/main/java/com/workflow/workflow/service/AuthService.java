@@ -22,6 +22,8 @@ public class AuthService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
+
     /**
      * Constructor injection.
      *
@@ -30,10 +32,12 @@ public class AuthService {
      */
     public AuthService(
             UserRepository userRepository,
-            BCryptPasswordEncoder passwordEncoder) {
+            BCryptPasswordEncoder passwordEncoder,
+            JwtService jwtService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     /**
@@ -147,6 +151,15 @@ public class AuthService {
         /*
          * Credentials are valid.
          *
+         * Generate a JWT using the authenticated user's email.
+         */
+        String token = jwtService.generateToken(
+                user.getEmail()
+        );
+
+        /*
+         * Credentials are valid.
+         *
          * Return safe user information.
          */
         return new LoginResponseDto(
@@ -154,7 +167,8 @@ public class AuthService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole(),
+                token
         );
     }
 }

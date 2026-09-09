@@ -5,7 +5,8 @@ package com.workflow.workflow.dto;
  *
  * Password is intentionally not included.
  *
- * JWT/token authentication will be introduced later.
+ * JWT token is returned so the client can use it
+ * for authenticated API requests.
  */
 public class LoginResponseDto {
 
@@ -14,6 +15,7 @@ public class LoginResponseDto {
     private String name;
     private String email;
     private String role;
+    private String token;
 
     public LoginResponseDto() {
     }
@@ -23,13 +25,15 @@ public class LoginResponseDto {
             Long userId,
             String name,
             String email,
-            String role) {
+            String role,
+            String token) {
 
         this.message = message;
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.token = token;
     }
 
     public String getMessage() {
@@ -50,5 +54,9 @@ public class LoginResponseDto {
 
     public String getRole() {
         return role;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
