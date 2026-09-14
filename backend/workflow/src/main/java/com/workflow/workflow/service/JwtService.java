@@ -47,11 +47,19 @@ public class JwtService {
      * Generates a JWT token for the given email.
      *
      * The email will be stored as the JWT subject.
+     *
+     * Generates a JWT containing the user's email and role.
+     *
+     * @param email user's email
+     * @param role user's application role
+     * @return generated JWT token
      */
-    public String generateToken(String email) {
+    public String generateToken(String email, String role) {
 
+        // Capture the token creation time.
         Date issuedAt = new Date();
 
+        // Calculate when the token should expire.
         Date expiration = new Date(
                 issuedAt.getTime() + jwtConfig.getExpiration()
         );
@@ -63,26 +71,35 @@ public class JwtService {
                  *
                  * In our application the user's email
                  * will be used as the subject.
+                 *
+                 * Store the user's email as the JWT subject.
                  */
                 .subject(email)
 
+                // Store the user's role as a custom JWT claim.
+                .claim("role", role)
+
                 /*
                  * Time when the token was created.
+                 * - Store token creation time.
                  */
                 .issuedAt(issuedAt)
 
                 /*
                  * Time when the token expires.
+                 * -Store token expiration time.
                  */
                 .expiration(expiration)
 
                 /*
                  * Sign the JWT using our secret key.
+                 * -Sign the token so it cannot be modified without knowing our secret key.
                  */
                 .signWith(secretKey)
 
                 /*
                  * Build the final JWT string.
+                 * - Convert JWT builder into the final token string.
                  */
                 .compact();
     }
@@ -96,6 +113,18 @@ public class JwtService {
 
         return extractAllClaims(token)
                 .getSubject();
+    }
+
+    /**
+     * Extracts the user's role from the JWT.
+     *
+     * @param token JWT token
+     * @return role stored inside the token
+     */
+    public String extractRole(String token) {
+
+        // Read all claims from the validated JWT.
+        return extractAllClaims(token).get("role", String.class);
     }
 
     /**

@@ -152,9 +152,11 @@ public class AuthService {
          * Credentials are valid.
          *
          * Generate a JWT using the authenticated user's email.
+         * -Generate JWT containing both email and user's role.
          */
         String token = jwtService.generateToken(
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
 
         /*
