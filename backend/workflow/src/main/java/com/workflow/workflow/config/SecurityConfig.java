@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableConfigurationProperties(JwtConfig.class)
 public class SecurityConfig {
@@ -61,8 +63,38 @@ public class SecurityConfig {
                         // Register and login are public endpoints.
                         .requestMatchers(
                                 "/api/auth/register",
-                                "/api/auth/login"
+                                "/api/auth/login",
+                                "/error"
                         ).permitAll()
+
+                        // All authenticated users can view employees.
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/employees",
+                                "/api/employees/**"
+                        ).hasAnyRole("ADMIN", "HR", "USER")
+
+                        // Only ADMIN and HR can create employees.
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/employees",
+                                "/api/employees/**"
+                        ).hasAnyRole("ADMIN", "HR")
+
+                        // Only ADMIN and HR can update employees.
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/employees",
+                                "/api/employees/**"
+                        ).hasAnyRole("ADMIN", "HR")
+
+                        // Only ADMIN can delete employees.
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/employees",
+                                "/api/employees/**"
+                        ).hasRole("ADMIN")
+
 
                         // Every other endpoint requires authentication.
                         .anyRequest().authenticated()
