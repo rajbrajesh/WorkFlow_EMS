@@ -42,6 +42,20 @@ public class EmployeeService {
     }
 
     /**
+     * Search employees using the provided search text.
+     *
+     * The Repository performs the actual database search
+     * across name, email, phone, department and designation.
+     */
+    public List<EmployeeResponseDto> searchEmployees(String search) {
+
+        return employeeRepository.searchEmployees(search)
+                .stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    /**
      * Get employee by ID.
      *
      * If the employee does not exist, throw a custom exception.

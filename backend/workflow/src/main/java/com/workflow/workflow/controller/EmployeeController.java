@@ -37,8 +37,26 @@ public class EmployeeController {
      * Get all employees.
      */
     @GetMapping
-    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployees() {
+    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployees(
+            @RequestParam(required = false) String search) {
 
+        /*
+         * If search parameter is provided and is not blank,
+         * call the search functionality.
+         *
+         * Otherwise, return all employees.
+         */
+        if (search != null && !search.isBlank()) {
+
+            return ResponseEntity.ok(
+                    employeeService.searchEmployees(search)
+            );
+        }
+
+        /*
+         * No search parameter means that the client
+         * wants all employees.
+         */
         return ResponseEntity.ok(
                 employeeService.getAllEmployees()
         );
