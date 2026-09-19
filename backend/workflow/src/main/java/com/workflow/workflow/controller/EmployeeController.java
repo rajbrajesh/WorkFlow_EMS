@@ -35,16 +35,33 @@ public class EmployeeController {
      * GET /api/employees
      *
      * Get all employees.
+     *
+     * Optional query parameters:
+     * - search      → searches across multiple employee fields
+     * - department  → filters employees by department
+     *
+     * Examples:
+     * GET /api/employees
+     * GET /api/employees?search=rah
+     * GET /api/employees?department=IT
      */
     @GetMapping
     public ResponseEntity<List<EmployeeResponseDto>> getAllEmployees(
-            @RequestParam(required = false) String search) {
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String department) {
 
         /*
-         * If search parameter is provided and is not blank,
-         * call the search functionality.
-         *
-         * Otherwise, return all employees.
+         * If department is provided, apply department filtering.
+         */
+        if (department != null && !department.isBlank()) {
+
+            return ResponseEntity.ok(
+                    employeeService.filterByDepartment(department)
+            );
+        }
+
+        /*
+         * If search is provided, perform text search.
          */
         if (search != null && !search.isBlank()) {
 
@@ -54,8 +71,8 @@ public class EmployeeController {
         }
 
         /*
-         * No search parameter means that the client
-         * wants all employees.
+         * If neither search nor department is provided,
+         * return all employees.
          */
         return ResponseEntity.ok(
                 employeeService.getAllEmployees()

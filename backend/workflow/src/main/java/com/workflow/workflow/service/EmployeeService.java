@@ -56,6 +56,21 @@ public class EmployeeService {
     }
 
     /**
+     * Filters employees by department.
+     *
+     * The Repository performs the actual database filtering.
+     * The returned entities are converted into response DTOs
+     * before sending them to the Controller.
+     */
+    public List<EmployeeResponseDto> filterByDepartment(String department) {
+
+        return employeeRepository.findByDepartmentIgnoreCase(department)
+                .stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    /**
      * Get employee by ID.
      *
      * If the employee does not exist, throw a custom exception.

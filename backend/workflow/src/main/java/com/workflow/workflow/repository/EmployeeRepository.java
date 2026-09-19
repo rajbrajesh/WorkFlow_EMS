@@ -61,4 +61,14 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
                OR LOWER(e.designation) LIKE LOWER(CONCAT('%', :search, '%'))
             """)
     List<Employee> searchEmployees(@Param("search") String search);
+
+    /**
+     * Finds employees by department.
+     *
+     * IgnoreCase makes the comparison case-insensitive.
+     *
+     * Example:
+     * "IT", "it" and "It" can match the same department.
+     */
+    List<Employee> findByDepartmentIgnoreCase(String department);
 }
