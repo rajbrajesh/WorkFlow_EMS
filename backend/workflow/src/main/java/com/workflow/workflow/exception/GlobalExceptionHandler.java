@@ -130,4 +130,28 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(apiError);
     }
+
+    /**
+     * Handles invalid request parameters.
+     *
+     * Example:
+     * GET /api/employees?sortBy=randomField
+     *
+     * Since the client provided an invalid value,
+     * the API returns HTTP 400 Bad Request.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgumentException(
+            IllegalArgumentException exception) {
+
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                exception.getMessage(),
+                null
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(apiError);
+    }
 }
