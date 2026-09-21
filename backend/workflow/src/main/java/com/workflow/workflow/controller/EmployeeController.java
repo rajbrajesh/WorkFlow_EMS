@@ -7,6 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import com.workflow.workflow.dto.PageResponseDto;
 
 import java.util.List;
 
@@ -45,37 +49,69 @@ public class EmployeeController {
      * GET /api/employees?search=rah
      * GET /api/employees?department=IT
      */
+//    @GetMapping
+//    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployees(
+//            @RequestParam(required = false) String search,
+//            @RequestParam(required = false) String department) {
+//
+//        /*
+//         * If department is provided, apply department filtering.
+//         */
+//        if (department != null && !department.isBlank()) {
+//
+//            return ResponseEntity.ok(
+//                    employeeService.filterByDepartment(department)
+//            );
+//        }
+//
+//        /*
+//         * If search is provided, perform text search.
+//         */
+//        if (search != null && !search.isBlank()) {
+//
+//            return ResponseEntity.ok(
+//                    employeeService.searchEmployees(search)
+//            );
+//        }
+//
+//        /*
+//         * If neither search nor department is provided,
+//         * return all employees.
+//         */
+//        return ResponseEntity.ok(
+//                employeeService.getAllEmployees()
+//        );
+//    }
+
+    /**
+     * GET /api/employees
+     *
+     * Get employees with pagination.
+     *
+     * Query parameters:
+     * - page → page number, starting from 0
+     * - size → number of employees per page
+     *
+     * Example:
+     * GET /api/employees?page=0&size=5
+     */
     @GetMapping
-    public ResponseEntity<List<EmployeeResponseDto>> getAllEmployees(
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String department) {
+    public ResponseEntity<PageResponseDto<List<EmployeeResponseDto>>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
 
         /*
-         * If department is provided, apply department filtering.
+         * Pageable contains the requested page number
+         * and number of records per page.
          */
-        if (department != null && !department.isBlank()) {
-
-            return ResponseEntity.ok(
-                    employeeService.filterByDepartment(department)
-            );
-        }
+        Pageable pageable = PageRequest.of(page, size);
 
         /*
-         * If search is provided, perform text search.
-         */
-        if (search != null && !search.isBlank()) {
-
-            return ResponseEntity.ok(
-                    employeeService.searchEmployees(search)
-            );
-        }
-
-        /*
-         * If neither search nor department is provided,
-         * return all employees.
+         * Service performs the database pagination
+         * and converts Employee entities into DTOs.
          */
         return ResponseEntity.ok(
-                employeeService.getAllEmployees()
+                employeeService.getEmployeesPaginated(pageable)
         );
     }
 

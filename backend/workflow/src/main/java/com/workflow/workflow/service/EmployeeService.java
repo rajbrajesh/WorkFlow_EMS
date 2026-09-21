@@ -10,6 +10,9 @@ import com.workflow.workflow.exception.DuplicateResourceException;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.workflow.workflow.dto.PageResponseDto;
 
 /**
  * Service layer for Employee-related business operations.
@@ -68,6 +71,44 @@ public class EmployeeService {
                 .stream()
                 .map(this::convertToResponseDto)
                 .toList();
+    }
+
+    /**
+     * Get employees using pagination.
+     *
+     * Pageable contains pagination information such as:
+     * - page number
+     * - page size
+     *
+     * Repository returns a Page<Employee>, which also contains
+     * pagination metadata such as total elements and total pages.
+     *
+     * We convert the employees into response DTOs and then
+     * create our own custom pagination response.
+     *
+     * The Employee entities are converted into
+     * EmployeeResponseDto objects before returning.
+     */
+    public PageResponseDto<List<EmployeeResponseDto>> getEmployeesPaginated(
+            Pageable pageable) {
+
+        Page<Employee> employeePage =
+                employeeRepository.findAll(pageable);
+
+        List<EmployeeResponseDto> employees =
+                employeePage.getContent()
+                        .stream()
+                        .map(this::convertToResponseDto)
+                        .toList();
+
+        return new PageResponseDto<>(
+                employees,
+                employeePage.getNumber(),
+                employeePage.getSize(),
+                employeePage.getTotalElements(),
+                employeePage.getTotalPages(),
+                employeePage.isLast()
+        );
     }
 
     /**
