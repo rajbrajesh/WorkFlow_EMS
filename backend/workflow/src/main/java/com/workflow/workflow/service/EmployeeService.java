@@ -14,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.workflow.workflow.dto.PageResponseDto;
 
+import com.workflow.workflow.specification.EmployeeSpecification;
+import org.springframework.data.jpa.domain.Specification;
+
 /**
  * Service layer for Employee-related business operations.
  *
@@ -101,6 +104,84 @@ public class EmployeeService {
                         .map(this::convertToResponseDto)
                         .toList();
 
+        return new PageResponseDto<>(
+                employees,
+                employeePage.getNumber(),
+                employeePage.getSize(),
+                employeePage.getTotalElements(),
+                employeePage.getTotalPages(),
+                employeePage.isLast()
+        );
+    }
+
+    /**
+     * Get employees using:
+     * - search
+     * - department filter
+     * - pagination
+     * - sorting
+     *
+     * Search and department are optional.
+     *
+     * If both are provided, both conditions are applied.
+     * If only one is provided, only that condition is applied.
+     */
+    public PageResponseDto<List<EmployeeResponseDto>> getEmployeesWithFilters(
+            String search,
+            String department,
+            Pageable pageable) {
+
+        /*
+         * Start with no filtering condition.
+         *
+         * Specification.where(null) allows us to dynamically
+         * add conditions using .and().
+         */
+        Specification<Employee> specification =
+                (root, query, criteriaBuilder) -> null;
+
+        /*
+         * Add search condition only when search is provided.
+         */
+        if (search != null && !search.isBlank()) {
+
+            specification = specification.and(
+                    EmployeeSpecification.search(search)
+            );
+        }
+
+        /*
+         * Add department condition only when department is provided.
+         */
+        if (department != null && !department.isBlank()) {
+
+            specification = specification.and(
+                    EmployeeSpecification.hasDepartment(department)
+            );
+        }
+
+        /*
+         * Execute the dynamically created specification
+         * along with pagination and sorting.
+         */
+        Page<Employee> employeePage =
+                employeeRepository.findAll(
+                        specification,
+                        pageable
+                );
+
+        /*
+         * Convert Employee entities into response DTOs.
+         */
+        List<EmployeeResponseDto> employees =
+                employeePage.getContent()
+                        .stream()
+                        .map(this::convertToResponseDto)
+                        .toList();
+
+        /*
+         * Return our custom pagination response.
+         */
         return new PageResponseDto<>(
                 employees,
                 employeePage.getNumber(),

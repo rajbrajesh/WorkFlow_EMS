@@ -7,21 +7,27 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  * Repository layer for Employee database operations.
  *
- * JpaRepository already provides common CRUD operations such as:
+ * JpaRepository provides common CRUD operations such as:
  * - save()
  * - findById()
  * - findAll()
  * - deleteById()
  * - existsById()
  *
- * We don't need to write SQL for these basic operations.
+ * JpaSpecificationExecutor allows us to build dynamic
+ * database queries using Specifications.
+ *
+ * This becomes useful when multiple optional filters,
+ * search conditions, pagination and sorting need to
+ * work together.
  */
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long>,JpaSpecificationExecutor<Employee> {
     /**
      * Checks whether an employee with the given email exists.
      *

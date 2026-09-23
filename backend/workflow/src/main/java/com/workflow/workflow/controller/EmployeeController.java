@@ -36,22 +36,25 @@ public class EmployeeController {
     }
 
     /**
-     * GET /api/employees
+     * Get employees with optional search and department filter,
+     * along with pagination and sorting.
      *
-     * Get employees with pagination and sorting.
+     * Supported query parameters:
      *
-     * Query parameters:
-     * - page      → page number, starting from 0
-     * - size      → number of employees per page
-     * - sortBy    → field by which employees should be sorted
-     * - direction → asc or desc
+     * search     -> searches name, email, phone, department, designation
+     * department -> filters employees by department
+     * page       -> page number, starts from 0
+     * size       -> number of records per page
+     * sortBy     -> field used for sorting
+     * direction  -> asc or desc
      *
-     * Examples:
-     * GET /api/employees?page=0&size=5&sortBy=name&direction=asc
-     * GET /api/employees?page=0&size=5&sortBy=salary&direction=desc
+     * Example:
+     * GET /api/employees?search=rah&department=IT&page=0&size=5&sortBy=salary&direction=desc
      */
     @GetMapping
     public ResponseEntity<PageResponseDto<List<EmployeeResponseDto>>> getAllEmployees(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String department,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -60,9 +63,6 @@ public class EmployeeController {
         /*
          * Define the employee fields that the API allows
          * clients to use for sorting.
-         *
-         * This prevents invalid field names from being
-         * passed directly to Spring Data JPA.
          */
         List<String> allowedSortFields = List.of(
                 "id",
@@ -75,24 +75,50 @@ public class EmployeeController {
         );
 
         /*
-         * Validate the requested sort field.
-         *
-         * If the field is not supported, return a clear
-         * client-side error instead of allowing an invalid
-         * database field to reach the repository.
+         * Prevent clients from requesting an invalid
+         * database/entity field for sorting.
          */
         if (!allowedSortFields.contains(sortBy)) {
-
             throw new IllegalArgumentException(
                     "Invalid sort field: " + sortBy
             );
         }
 
         /*
-         * Decide the sorting direction.
+         * Page number cannot be negative.
+         */
+        if (page < 0) {
+            throw new IllegalArgumentException(
+                    "Page number cannot be negative"
+            );
+        }
+
+        /*
+         * Page size must be greater than zero.
+         */
+        if (size <= 0) {
+            throw new IllegalArgumentException(
+                    "Page size must be greater than zero"
+            );
+        }
+
+        /*
+         * Restrict the sorting direction to only ASC or DESC.
+         */
+        if (!direction.equalsIgnoreCase("asc")
+                && !direction.equalsIgnoreCase("desc")) {
+
+            throw new IllegalArgumentException(
+                    "Invalid sort direction: " + direction
+            );
+        }
+
+        /*
+         * Convert the direction string into Spring's
+         * Sort.Direction.
          *
-         * "desc" → descending
-         * anything else → ascending
+         * "desc" -> descending
+         * anything else -> ascending
          */
         Sort.Direction sortDirection =
                 direction.equalsIgnoreCase("desc")
@@ -100,24 +126,28 @@ public class EmployeeController {
                         : Sort.Direction.ASC;
 
         /*
-         * Create Sort using the validated field and direction.
-         */
-        Sort sort = Sort.by(sortDirection, sortBy);
-
-        /*
          * Create Pageable containing:
          * - page number
          * - page size
          * - sorting information
          */
+        Sort sort = Sort.by(sortDirection, sortBy);
+
         Pageable pageable =
                 PageRequest.of(page, size, sort);
 
         /*
-         * Service performs pagination + sorting.
+         * Send all optional filters + pagination information
+         * to the service.
+         *
+         * The service will dynamically build the Specification.
          */
         return ResponseEntity.ok(
-                employeeService.getEmployeesPaginated(pageable)
+                employeeService.getEmployeesWithFilters(
+                        search,
+                        department,
+                        pageable
+                )
         );
     }
 
