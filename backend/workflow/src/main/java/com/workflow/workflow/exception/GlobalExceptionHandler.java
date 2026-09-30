@@ -5,10 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.workflow.workflow.exception.InvalidCredentialsException;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles exceptions globally across all REST controllers.
@@ -18,6 +19,14 @@ import java.util.Map;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * Logger used to record unexpected server-side exceptions.
+     *
+     * The actual exception is logged on the server,
+     * while the client receives only a safe generic message.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * Handles validation errors caused by @Valid.
@@ -74,12 +83,25 @@ public class GlobalExceptionHandler {
     /**
      * Fallback handler for unexpected exceptions.
      *
+     * The actual exception is logged on the server for debugging.
+     *
      * This prevents internal exception details from being
      * exposed directly to the API client.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(
             Exception exception) {
+
+        /**
+         * Log the Complete exception on the server.
+         *
+         * The Exception itself is intentionally Not returned
+         * to the API client
+         */
+        logger.error(
+                "Unexcepted error occurred while processing request",
+                exception
+        );
 
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
