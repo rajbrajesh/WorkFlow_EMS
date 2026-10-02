@@ -1,0 +1,55 @@
+/*
+ * Global styles for the WorkFlow application.
+ *
+ * These styles apply to the complete React application.
+ * The default Vite dark-theme styles have been removed.
+ */
+
+/*
+ * Make width and height calculations predictable
+ * for all elements.
+ */
+* {
+    box-sizing: border-box;
+}
+
+/*
+ * Remove default browser spacing.
+ */
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Global body styling.
+ *
+ * WorkFlow uses a clean white background with
+ * dark text and a modern system font.
+ */
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background-color: #ffffff;
+    color: #1f2937;
+}
+
+/*
+ * Remove default link styling.
+ *
+ * We will define link styles separately when
+ * navigation is introduced.
+ */
+a {
+    color: inherit;
+    text-decoration: none;
+}

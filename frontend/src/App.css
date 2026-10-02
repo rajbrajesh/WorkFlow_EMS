@@ -1,0 +1,56 @@
+/*
+ * Main styling for the WorkFlow application.
+ *
+ * We are keeping the initial design simple:
+ * - White background
+ * - Sky-blue primary color
+ * - Clean and professional appearance
+ */
+
+#root {
+    width: 100%;
+}
+
+/*
+ * Main application container.
+ */
+.app-container {
+    min-height: 100vh;
+    background-color: #ffffff;
+    color: #1f2937;
+}
+
+/*
+ * Temporary header used during frontend foundation setup.
+ *
+ * Later this will be replaced by our reusable Navbar component.
+ */
+.app-header {
+    padding: 20px 40px;
+    background-color: #e0f2fe;
+    border-bottom: 1px solid #bae6fd;
+}
+
+/*
+ * Application title.
+ */
+.app-header h1 {
+    margin: 0;
+    color: #0284c7;
+    font-size: 28px;
+}
+
+/*
+ * Temporary subtitle.
+ */
+.app-header p {
+    margin: 6px 0 0;
+    color: #475569;
+}
+
+/*
+ * Main content area.
+ */
+.app-content {
+    padding: 40px;
+}
