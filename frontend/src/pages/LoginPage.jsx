@@ -1,18 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import FormInput from "../components/forms/FormInput";
 import "./LoginPage.css";
 
 /**
  * Login page for WorkFlow.
  *
- * AuthLayout already provides:
- * - Authentication page background
- * - Authentication card
- * - WorkFlow branding
- *
- * Therefore, this component only contains
- * Login-specific content.
+ * AuthLayout provides the common authentication layout.
+ * FormInput provides reusable input fields.
  */
 function LoginPage() {
 
@@ -29,7 +25,7 @@ function LoginPage() {
     /*
      * Handles the login form submission.
      *
-     * API integration will be added later.
+     * Backend API integration will be added later.
      */
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -51,41 +47,31 @@ function LoginPage() {
             {/* Login form */}
             <form onSubmit={handleSubmit}>
 
-                {/* Email field */}
-                <div className="form-group">
-                    <label htmlFor="email">
-                        Email
-                    </label>
+                {/* Reusable email input */}
+                <FormInput
+                    id="email"
+                    label="Email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(event) =>
+                        setEmail(event.target.value)
+                    }
+                    required
+                />
 
-                    <input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
-                        }
-                        required
-                    />
-                </div>
-
-                {/* Password field */}
-                <div className="form-group">
-                    <label htmlFor="password">
-                        Password
-                    </label>
-
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
-                        }
-                        required
-                    />
-                </div>
+                {/* Reusable password input */}
+                <FormInput
+                    id="password"
+                    label="Password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(event) =>
+                        setPassword(event.target.value)
+                    }
+                    required
+                />
 
                 {/* Login button */}
                 <button

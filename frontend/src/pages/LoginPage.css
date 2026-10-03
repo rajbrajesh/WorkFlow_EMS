@@ -1,14 +1,27 @@
 /*
- * Styling for the WorkFlow Login page.
+ * Common authentication page styling for WorkFlow.
  *
- * The design follows our application theme:
- * - White background
+ * These styles are shared by:
+ * - Login page
+ * - Register page
+ *
+ * Authentication pages use:
+ * - White card
  * - Sky-blue primary color
- * - Clean and simple authentication card
+ * - Clean form controls
+ * - Responsive layout
  */
+
+
+/* =========================================
+   Authentication Page
+   ========================================= */
 
 /*
  * Complete authentication page.
+ *
+ * The page takes at least the full viewport height
+ * and centers the authentication card.
  */
 .auth-page {
     min-height: 100vh;
@@ -22,8 +35,13 @@
     background-color: #f0f9ff;
 }
 
+
+/* =========================================
+   Authentication Card
+   ========================================= */
+
 /*
- * Login card.
+ * Main card containing Login/Register content.
  */
 .auth-card {
     width: 100%;
@@ -39,11 +57,17 @@
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
+
+/* =========================================
+   Application Branding
+   ========================================= */
+
 /*
- * Application branding section.
+ * Branding section provided by AuthLayout.
  */
 .auth-header {
     text-align: center;
+
     margin-bottom: 28px;
 }
 
@@ -66,39 +90,62 @@
     margin: 6px 0 0;
 
     color: #64748b;
+
     font-size: 14px;
 }
 
+
+/* =========================================
+   Authentication Title
+   ========================================= */
+
 /*
- * Login heading section.
+ * Login/Register heading section.
  */
 .auth-title {
     margin-bottom: 24px;
 }
 
+/*
+ * Main authentication heading.
+ */
 .auth-title h2 {
     margin: 0 0 6px;
 
     color: #1e293b;
+
     font-size: 24px;
+    font-weight: 600;
 }
 
+/*
+ * Authentication heading description.
+ */
 .auth-title p {
     margin: 0;
 
     color: #64748b;
+
     font-size: 14px;
 }
 
+
+/* =========================================
+   Form Fields
+   ========================================= */
+
 /*
  * Individual form field container.
+ *
+ * FormInput uses this class.
  */
 .form-group {
     margin-bottom: 18px;
 }
 
+
 /*
- * Form labels.
+ * Form field labels.
  */
 .form-group label {
     display: block;
@@ -111,8 +158,9 @@
     font-weight: 600;
 }
 
+
 /*
- * Text and password inputs.
+ * Text, email and password inputs.
  */
 .form-group input {
     width: 100%;
@@ -127,22 +175,95 @@
     color: #1e293b;
     background-color: #ffffff;
 
+    font-family: inherit;
     font-size: 14px;
 
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
+
+/*
+ * Input placeholder text.
+ */
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
 
 /*
  * Input focus state.
+ *
+ * Provides a visible blue focus indicator
+ * when the user selects an input.
  */
 .form-group input:focus {
     border-color: #38bdf8;
 
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    box-shadow:
+        0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
+
+/* =========================================
+   Role Select
+   ========================================= */
+
 /*
- * Login button.
+ * Role dropdown used on RegisterPage.
+ *
+ * It intentionally uses the same visual language
+ * as the text inputs.
+ */
+.form-group select {
+    width: 100%;
+    min-width: 0;
+
+    padding: 12px 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    outline: none;
+
+    color: #1e293b;
+    background-color: #ffffff;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    /*
+     * Prevent the select element itself from
+     * becoming wider than its parent container.
+     */
+    max-width: 100%;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/*
+ * Role dropdown focus state.
+ */
+.form-group select:focus {
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+
+/* =========================================
+   Authentication Button
+   ========================================= */
+
+/*
+ * Login/Register button.
  */
 .auth-button {
     width: 100%;
@@ -155,23 +276,55 @@
     background-color: #0284c7;
     color: #ffffff;
 
+    font-family: inherit;
     font-size: 15px;
     font-weight: 600;
 
     cursor: pointer;
 
-    transition: background-color 0.2s;
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease,
+        box-shadow 0.2s ease;
 }
 
+
 /*
- * Login button hover state.
+ * Button hover state.
  */
 .auth-button:hover {
     background-color: #0369a1;
+
+    box-shadow:
+        0 4px 10px rgba(2, 132, 199, 0.2);
 }
 
+
 /*
- * Footer section containing the Register link.
+ * Button active state.
+ *
+ * Gives a small visual feedback when clicked.
+ */
+.auth-button:active {
+    transform: translateY(1px);
+}
+
+
+/*
+ * Keyboard focus state for the button.
+ */
+.auth-button:focus-visible {
+    outline: 3px solid rgba(56, 189, 248, 0.35);
+    outline-offset: 2px;
+}
+
+
+/* =========================================
+   Authentication Footer
+   ========================================= */
+
+/*
+ * Footer containing Login/Register navigation.
  */
 .auth-footer {
     margin-top: 22px;
@@ -179,6 +332,10 @@
     text-align: center;
 }
 
+
+/*
+ * Footer text.
+ */
 .auth-footer p {
     margin: 0;
 
@@ -187,8 +344,9 @@
     font-size: 14px;
 }
 
+
 /*
- * Register navigation link.
+ * Login/Register navigation link.
  */
 .auth-footer a {
     color: #0284c7;
@@ -196,6 +354,96 @@
     font-weight: 600;
 }
 
+
+/*
+ * Navigation link hover state.
+ */
 .auth-footer a:hover {
     text-decoration: underline;
+}
+
+
+/* =========================================
+   Validation Error
+   ========================================= */
+
+/*
+ * Inline validation message.
+ *
+ * This is displayed below the field instead of
+ * using a browser alert popup.
+ */
+.form-error {
+    margin-top: -12px;
+    margin-bottom: 16px;
+
+    color: #dc2626;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* =========================================
+   Responsive Design
+   ========================================= */
+
+/*
+ * Smaller screens such as mobile phones.
+ *
+ * Reduce card padding and page spacing so the
+ * authentication form has enough available space.
+ */
+@media (max-width: 480px) {
+
+    .auth-page {
+        padding: 16px;
+    }
+
+    .auth-card {
+        padding: 24px;
+    }
+
+    .auth-header h1 {
+        font-size: 28px;
+    }
+
+    .auth-title h2 {
+        font-size: 22px;
+    }
+
+    .form-group select {
+        /*
+        * Keep the role dropdown within the
+        * available mobile screen width.
+        */
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+
+/*
+ * Very small screens.
+ *
+ * Provides additional protection against content
+ * becoming too cramped on narrow devices.
+ */
+@media (max-width: 360px) {
+
+    .auth-page {
+        padding: 12px;
+    }
+
+    .auth-card {
+        padding: 20px;
+    }
+
+    .auth-header {
+        margin-bottom: 22px;
+    }
+
+    .auth-title {
+        margin-bottom: 20px;
+    }
 }

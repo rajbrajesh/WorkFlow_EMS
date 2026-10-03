@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import FormInput from "../components/forms/FormInput";
+
 /**
  * Register page for WorkFlow.
  *
- * AuthLayout already provides:
- * - Authentication page background
- * - Authentication card
- * - WorkFlow branding
- *
- * Therefore, this component contains only
- * registration-specific content.
+ * AuthLayout provides the common authentication layout.
+ * FormInput provides reusable text/password input fields.
  */
 function RegisterPage() {
 
@@ -35,9 +32,15 @@ function RegisterPage() {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     /*
+    * Stores the password mismatch error message.
+    *
+    * The error is displayed directly below the
+    * Confirm Password field instead of using alert().
+    */
+    const [passwordError, setPasswordError] = useState("");
+
+    /*
      * Stores the selected user role.
-     *
-     * USER is the default role.
      */
     const [role, setRole] = useState("USER");
 
@@ -53,15 +56,12 @@ function RegisterPage() {
          * Temporary frontend validation.
          */
         if (password !== confirmPassword) {
-            alert("Passwords do not match.");
+            setPasswordError("Passwords do not match.");
             return;
         }
 
         /*
          * Temporary console output.
-         *
-         * Later this data will be sent to the
-         * Spring Boot registration API.
          */
         console.log("Register form submitted:", {
             name,
@@ -82,80 +82,94 @@ function RegisterPage() {
             {/* Registration form */}
             <form onSubmit={handleSubmit}>
 
-                {/* Name field */}
-                <div className="form-group">
-                    <label htmlFor="name">
-                        Name
-                    </label>
+                {/* Reusable name input */}
+                <FormInput
+                    id="name"
+                    label="Name"
+                    type="text"
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(event) =>
+                        setName(event.target.value)
+                    }
+                    required
+                />
 
-                    <input
-                        id="name"
-                        type="text"
-                        placeholder="Enter your name"
-                        value={name}
-                        onChange={(event) =>
-                            setName(event.target.value)
+                {/* Reusable email input */}
+                <FormInput
+                    id="email"
+                    label="Email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(event) =>
+                        setEmail(event.target.value)
+                    }
+                    required
+                />
+
+                {/* Reusable password input */}
+                <FormInput
+                    id="password"
+                    label="Password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(event) => {
+                        const value = event.target.value;
+
+                        setPassword(value);
+
+                        /*
+                        * Re-check the confirm password whenever
+                        * the original password changes.
+                        */
+                        if (confirmPassword && value !== confirmPassword) {
+                            setPasswordError("Passwords do not match.");
+                        } else {
+                            setPasswordError("");
                         }
-                        required
-                    />
-                </div>
+                    }}
+                    required
+                />
 
-                {/* Email field */}
-                <div className="form-group">
-                    <label htmlFor="email">
-                        Email
-                    </label>
+                {/* Reusable confirm-password input */}
+                <FormInput
+                    id="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(event) => {
+                        const value = event.target.value;
 
-                    <input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
+                        setConfirmPassword(value);
+
+                        /*
+                        * Live password matching.
+                        *
+                        * We only show the error when the user has
+                        * entered something and the passwords differ.
+                        */
+                        if (value && value !== password) {
+                            setPasswordError("Passwords do not match.");
+                        } else {
+                            setPasswordError("");
                         }
-                        required
-                    />
-                </div>
+                    }}
+                    required
+                />
 
-                {/* Password field */}
-                <div className="form-group">
-                    <label htmlFor="password">
-                        Password
-                    </label>
-
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
-                        }
-                        required
-                    />
-                </div>
-
-                {/* Confirm password field */}
-                <div className="form-group">
-                    <label htmlFor="confirmPassword">
-                        Confirm Password
-                    </label>
-
-                    <input
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChange={(event) =>
-                            setConfirmPassword(event.target.value)
-                        }
-                        required
-                    />
-                </div>
+                {/* Password mismatch error */}
+                {passwordError && (
+                    <p className="form-error">
+                        {passwordError}
+                    </p>
+                )}
 
                 {/* Role field */}
                 <div className="form-group">
+
                     <label htmlFor="role">
                         Role
                     </label>
@@ -171,6 +185,7 @@ function RegisterPage() {
                         <option value="HR">HR</option>
                         <option value="ADMIN">Admin</option>
                     </select>
+
                 </div>
 
                 {/* Register button */}
