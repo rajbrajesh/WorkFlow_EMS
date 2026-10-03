@@ -1,0 +1,201 @@
+/*
+ * Styling for the WorkFlow Login page.
+ *
+ * The design follows our application theme:
+ * - White background
+ * - Sky-blue primary color
+ * - Clean and simple authentication card
+ */
+
+/*
+ * Complete authentication page.
+ */
+.auth-page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background-color: #f0f9ff;
+}
+
+/*
+ * Login card.
+ */
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 36px;
+
+    background-color: #ffffff;
+
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+/*
+ * Application branding section.
+ */
+.auth-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+/*
+ * WorkFlow application name.
+ */
+.auth-header h1 {
+    margin: 0;
+
+    color: #0284c7;
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/*
+ * Application subtitle.
+ */
+.auth-header p {
+    margin: 6px 0 0;
+
+    color: #64748b;
+    font-size: 14px;
+}
+
+/*
+ * Login heading section.
+ */
+.auth-title {
+    margin-bottom: 24px;
+}
+
+.auth-title h2 {
+    margin: 0 0 6px;
+
+    color: #1e293b;
+    font-size: 24px;
+}
+
+.auth-title p {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+}
+
+/*
+ * Individual form field container.
+ */
+.form-group {
+    margin-bottom: 18px;
+}
+
+/*
+ * Form labels.
+ */
+.form-group label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #334155;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/*
+ * Text and password inputs.
+ */
+.form-group input {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    outline: none;
+
+    color: #1e293b;
+    background-color: #ffffff;
+
+    font-size: 14px;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/*
+ * Input focus state.
+ */
+.form-group input:focus {
+    border-color: #38bdf8;
+
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+/*
+ * Login button.
+ */
+.auth-button {
+    width: 100%;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #0284c7;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s;
+}
+
+/*
+ * Login button hover state.
+ */
+.auth-button:hover {
+    background-color: #0369a1;
+}
+
+/*
+ * Footer section containing the Register link.
+ */
+.auth-footer {
+    margin-top: 22px;
+
+    text-align: center;
+}
+
+.auth-footer p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+/*
+ * Register navigation link.
+ */
+.auth-footer a {
+    color: #0284c7;
+
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}

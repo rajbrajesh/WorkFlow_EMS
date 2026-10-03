@@ -1,51 +1,68 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
+import AuthLayout from "../layouts/AuthLayout";
+
 /**
  * Defines all application routes for WorkFlow.
  *
- * Currently we are creating placeholder routes.
- * Actual Login, Register, Dashboard and Employee pages
- * will be created in later phases.
+ * Authentication pages such as Login and Register
+ * share the common AuthLayout.
  */
 function AppRoutes() {
     return (
         <Routes>
 
-            {/* Temporary home route. */}
+            {/* 
+             * Authentication routes.
+             *
+             * Both Login and Register use the same
+             * AuthLayout for their common UI.
+             */}
+            <Route element={<AuthLayout />}>
+
+                {/* Login page */}
+                <Route
+                    path="/login"
+                    element={<LoginPage />}
+                />
+
+                {/* Register page */}
+                <Route
+                    path="/register"
+                    element={<RegisterPage />}
+                />
+
+            </Route>
+
+            {/* 
+             * Root URL redirects to Login.
+             */}
             <Route
                 path="/"
                 element={<Navigate to="/login" replace />}
             />
 
-            {/* Authentication routes. */}
-            <Route
-                path="/login"
-                element={<h1>Login Page</h1>}
-            />
-
-            <Route
-                path="/register"
-                element={<h1>Register Page</h1>}
-            />
-
-            {/* Dashboard route. */}
+            {/* Temporary dashboard page */}
             <Route
                 path="/dashboard"
                 element={<h1>Dashboard Page</h1>}
             />
 
-            {/* Employee management routes. */}
+            {/* Temporary employees page */}
             <Route
                 path="/employees"
                 element={<h1>Employees Page</h1>}
             />
 
+            {/* Temporary employee details page */}
             <Route
                 path="/employees/:id"
                 element={<h1>Employee Details Page</h1>}
             />
 
-            {/* Unknown URLs go back to login. */}
+            {/* Unknown URLs redirect to Login */}
             <Route
                 path="*"
                 element={<Navigate to="/login" replace />}
