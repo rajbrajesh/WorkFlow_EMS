@@ -383,6 +383,21 @@
     font-weight: 500;
 }
 
+/* Success message displayed after successful registration */
+.form-success {
+    margin-top: 12px;
+    margin-bottom: 16px;
+    color: #15803d;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Disabled state for the authentication button */
+.auth-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 
 /* =========================================
    Responsive Design
@@ -420,6 +435,8 @@
         width: 100%;
         max-width: 100%;
     }
+
+
 }
 
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import FormInput from "../components/forms/FormInput";
+import { registerUser } from "../services/authService";
 
 /**
  * Register page for WorkFlow.
@@ -40,17 +41,36 @@ function RegisterPage() {
     const [passwordError, setPasswordError] = useState("");
 
     /*
-     * Stores the selected user role.
-     */
-    const [role, setRole] = useState("USER");
+    * Stores the registration success message.
+    */
+    const [successMessage, setSuccessMessage] = useState("");
+
+    /*
+    * Stores the registration API error message.
+    */
+    const [registrationError, setRegistrationError] = useState("");
+
+    /*
+    * Tracks whether the registration API request
+    * is currently in progress.
+    */
+    const [isLoading, setIsLoading] = useState(false);
+
 
     /*
      * Handles registration form submission.
      *
      * Backend API integration will be added later.
      */
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        /*
+        * Clear previous API messages before starting
+        * a new registration attempt.
+        */
+        setSuccessMessage("");
+        setRegistrationError("");
+
 
         /*
          * Temporary frontend validation.
@@ -61,14 +81,62 @@ function RegisterPage() {
         }
 
         /*
-         * Temporary console output.
-         */
-        console.log("Register form submitted:", {
+        * Prepare only the data required by the backend.
+        *
+        * confirmPassword is a frontend-only field and
+        * should not be sent to the backend.
+        *
+        * Role is intentionally not sent because new users
+        * are assigned USER role by the backend.
+        */
+        const registerData = {
             name,
             email,
-            password,
-            role
-        });
+            password
+        };
+
+        try {
+
+            /*
+            * Show loading state while the backend
+            * processes the registration request.
+            */
+            setIsLoading(true);
+
+            /*
+            * Send registration request to the backend.
+            */
+            const response = await registerUser(registerData);
+
+            /*
+            * Show successful registration message
+            * directly to the user.
+            */
+            setSuccessMessage(
+                response.data?.message || "Registration successful."
+            );
+
+        } catch (error) {
+
+            /*
+            * Try to use the backend's error message.
+            *
+            * If the backend does not provide one,
+            * show a safe generic message.
+            */
+            const message =
+                error.response?.data?.message ||
+                "Registration failed. Please try again.";
+
+            setRegistrationError(message);
+        } finally {
+
+            /*
+            * Stop the loading state whether the request
+            * succeeds or fails.
+            */
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -102,8 +170,13 @@ function RegisterPage() {
                     type="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(event) =>
-                        setEmail(event.target.value)
+                    onChange={(event) =>{
+                        setEmail(event.target.value);
+
+                        // Clear previous backend registration error
+                        // when the user starts correcting the email.
+                        setRegistrationError("");
+                    }
                     }
                     required
                 />
@@ -167,33 +240,28 @@ function RegisterPage() {
                     </p>
                 )}
 
-                {/* Role field */}
-                <div className="form-group">
+                {/* Registration success message */}
+                {successMessage && (
+                    <p className="form-success">
+                        {successMessage}
+                    </p>
+                )}
 
-                    <label htmlFor="role">
-                        Role
-                    </label>
+                {/* Registration error message */}
+                {registrationError && (
+                    <p className="form-error">
+                        {registrationError}
+                    </p>
+                )}
 
-                    <select
-                        id="role"
-                        value={role}
-                        onChange={(event) =>
-                            setRole(event.target.value)
-                        }
-                    >
-                        <option value="USER">User</option>
-                        <option value="HR">HR</option>
-                        <option value="ADMIN">Admin</option>
-                    </select>
-
-                </div>
 
                 {/* Register button */}
                 <button
                     type="submit"
                     className="auth-button"
+                    disabled={isLoading}
                 >
-                    Register
+                    {isLoading ? "Registering..." : "Register"}
                 </button>
 
             </form>
