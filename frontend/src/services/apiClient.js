@@ -34,6 +34,37 @@ const apiClient = axios.create({
 });
 
 /*
+ * Axios request interceptor.
+ *
+ * Runs before every API request and checks whether
+ * a JWT token is available in localStorage.
+ */
+apiClient.interceptors.request.use(
+    (config) => {
+        /*
+         * Retrieve the JWT saved during login.
+         */
+        const token = localStorage.getItem("workflow_token");
+
+        /*
+         * Add the JWT to the Authorization header
+         * when a token is available.
+         */
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
+    },
+    (error) => {
+        /*
+         * Pass request errors to Axios.
+         */
+        return Promise.reject(error);
+    }
+);
+
+/*
  * Export the configured Axios client.
  *
  * Other services can import this instead of
