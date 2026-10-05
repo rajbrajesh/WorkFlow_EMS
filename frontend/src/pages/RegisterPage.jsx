@@ -176,8 +176,7 @@ function RegisterPage() {
                         // Clear previous backend registration error
                         // when the user starts correcting the email.
                         setRegistrationError("");
-                    }
-                    }
+                    }}
                     required
                 />
 

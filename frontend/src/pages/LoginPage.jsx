@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import FormInput from "../components/forms/FormInput";
 import "./LoginPage.css";
+import { loginUser } from "../services/authService";
 
 /**
  * Login page for WorkFlow.
@@ -11,6 +12,11 @@ import "./LoginPage.css";
  * FormInput provides reusable input fields.
  */
 function LoginPage() {
+
+    /*
+     * Provides programmatic navigation after successful login.
+     */
+    const navigate = useNavigate();
 
     /*
      * Stores the email entered by the user.
@@ -23,17 +29,111 @@ function LoginPage() {
     const [password, setPassword] = useState("");
 
     /*
-     * Handles the login form submission.
-     *
-     * Backend API integration will be added later.
-     */
-    const handleSubmit = (event) => {
+    * Stores the success message after successful login.
+    */
+    const [successMessage, setSuccessMessage] = useState("");
+
+    /*
+    * Stores the error message returned by the backend.
+    */
+    const [loginError, setLoginError] = useState("");
+
+    /*
+    * Tracks whether the login API request is in progress.
+    */
+    const [isLoading, setIsLoading] = useState(false);
+
+    /*
+    * Handles the login form submission.
+    *
+    * Sends the user's credentials to the backend
+    * and handles the login API response.
+    */
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log("Login form submitted:", {
+        /*
+        * Clear messages from the previous login attempt.
+        */
+        setSuccessMessage("");
+        setLoginError("");
+
+        /*
+        * Prepare the login data expected by the backend.
+        */
+        const loginData = {
             email,
             password
-        });
+        };
+
+        try {
+            /*
+            * Show loading state while the API request is running.
+            */
+            setIsLoading(true);
+
+            /*
+            * Send login request to the backend.
+            */
+            const response = await loginUser(loginData);
+
+            /*
+            * Store the JWT token returned by the backend.
+            *
+            * The token will be used later when calling
+            * protected backend APIs.
+            */
+            const token = response.data?.token;
+
+            if (token) {
+                localStorage.setItem("workflow_token", token);
+            }
+
+            /*
+            * Temporarily store the success message.
+            *
+            * The response message will be displayed in
+            * the next part of Step 25C.
+            */
+            setSuccessMessage(
+                response.data?.message || "Login successful."
+            );
+
+            /*
+            * Temporary console log for verification.
+            */
+            console.log("Login successful:", response.data);
+
+            /*
+            * Redirect the user to the dashboard
+            * after successful authentication.
+            */
+            navigate("/dashboard");
+
+        } catch (error) {
+            /*
+            * Read the backend error message when available.
+            *
+            * If the backend does not provide a message,
+            * use a safe fallback message.
+            */
+            const message =
+                error.response?.data?.message ||
+                "Login failed. Please check your credentials.";
+
+            setLoginError(message);
+
+            /*
+            * Temporary console log for debugging.
+            */
+            console.error("Login failed:", error.response?.data || error.message);
+
+        } finally {
+            /*
+            * Stop the loading state regardless of success or failure.
+            */
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -54,9 +154,10 @@ function LoginPage() {
                     type="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(event) =>
-                        setEmail(event.target.value)
-                    }
+                    onChange={(event) => {
+                        setEmail(event.target.value);
+                        setLoginError("");
+                    }}
                     required
                 />
 
@@ -67,18 +168,34 @@ function LoginPage() {
                     type="password"
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(event) =>
-                        setPassword(event.target.value)
-                    }
+                    onChange={(event) => {
+                        setPassword(event.target.value);
+                        setLoginError("");
+                    }}
                     required
                 />
+
+                {/* Login success message */}
+                {successMessage && (
+                    <p className="form-success">
+                        {successMessage}
+                    </p>
+                )}
+
+                {/* Login error message */}
+                {loginError && (
+                    <p className="form-error">
+                        {loginError}
+                    </p>
+                )}
 
                 {/* Login button */}
                 <button
                     type="submit"
                     className="auth-button"
+                    disabled={isLoading}
                 >
-                    Login
+                    {isLoading ? "Logging in..." : "Login"}
                 </button>
 
             </form>
