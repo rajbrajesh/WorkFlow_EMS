@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import FormInput from "../components/forms/FormInput";
 import "./LoginPage.css";
 import { loginUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Login page for WorkFlow.
@@ -17,6 +18,11 @@ function LoginPage() {
      * Provides programmatic navigation after successful login.
      */
     const navigate = useNavigate();
+
+    /*
+    * Access authentication actions from AuthContext.
+    */
+    const { login } = useAuth();
 
     /*
      * Stores the email entered by the user.
@@ -86,8 +92,18 @@ function LoginPage() {
             const token = response.data?.token;
 
             if (token) {
+                /*
+                * Store the JWT returned by the backend.
+                */
                 localStorage.setItem("workflow_token", token);
+
+                /*
+                * Update the global authentication state
+                * only after a valid token is available.
+                */
+                login();
             }
+
 
             /*
             * Temporarily store the success message.

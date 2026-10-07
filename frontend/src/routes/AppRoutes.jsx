@@ -4,6 +4,9 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import AuthLayout from "../layouts/AuthLayout";
 
+import ProtectedRoute from "./ProtectedRoute";
+import LogoutButton from "../components/auth/LogoutButton";
+
 /**
  * Defines all application routes for WorkFlow.
  *
@@ -44,23 +47,33 @@ function AppRoutes() {
                 element={<Navigate to="/login" replace />}
             />
 
-            {/* Temporary dashboard page */}
-            <Route
-                path="/dashboard"
-                element={<h1>Dashboard Page</h1>}
-            />
+            {/* Protected application routes */}
+            <Route element={<ProtectedRoute />}>
+                {/* Dashboard requires authentication */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <div>
+                            <h1>Dashboard Page</h1>
 
-            {/* Temporary employees page */}
-            <Route
-                path="/employees"
-                element={<h1>Employees Page</h1>}
-            />
+                            {/* Logout button for authenticated users */}
+                            <LogoutButton />
+                        </div>
+                    }
+                />
 
-            {/* Temporary employee details page */}
-            <Route
-                path="/employees/:id"
-                element={<h1>Employee Details Page</h1>}
-            />
+                {/* Employee list requires authentication */}
+                <Route
+                    path="/employees"
+                    element={<h1>Employees Page</h1>}
+                />
+
+                {/* Employee details requires authentication */}
+                <Route
+                    path="/employees/:id"
+                    element={<h1>Employee Details Page</h1>}
+                />
+            </Route>
 
             {/* Unknown URLs redirect to Login */}
             <Route
