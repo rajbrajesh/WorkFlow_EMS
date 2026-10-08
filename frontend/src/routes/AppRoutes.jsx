@@ -5,7 +5,8 @@ import RegisterPage from "../pages/RegisterPage";
 import AuthLayout from "../layouts/AuthLayout";
 
 import ProtectedRoute from "./ProtectedRoute";
-import LogoutButton from "../components/auth/LogoutButton";
+import DashboardLayout from "../layouts/DashboardLayout";
+import Dashboard from "../pages/Dashboard";
 
 /**
  * Defines all application routes for WorkFlow.
@@ -49,30 +50,28 @@ function AppRoutes() {
 
             {/* Protected application routes */}
             <Route element={<ProtectedRoute />}>
-                {/* Dashboard requires authentication */}
-                <Route
-                    path="/dashboard"
-                    element={
-                        <div>
-                            <h1>Dashboard Page</h1>
+                {/* Common layout for all authenticated pages */}
+                <Route element={<DashboardLayout />}>
+                    
+                    {/* Dashboard page */}
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
 
-                            {/* Logout button for authenticated users */}
-                            <LogoutButton />
-                        </div>
-                    }
-                />
+                    {/* Employee list page */}
+                    <Route
+                        path="/employees"
+                        element={<h1>Employees Page</h1>}
+                    />
 
-                {/* Employee list requires authentication */}
-                <Route
-                    path="/employees"
-                    element={<h1>Employees Page</h1>}
-                />
+                    {/* Employee details page */}
+                    <Route
+                        path="/employees/:id"
+                        element={<h1>Employee Details Page</h1>}
+                    />
 
-                {/* Employee details requires authentication */}
-                <Route
-                    path="/employees/:id"
-                    element={<h1>Employee Details Page</h1>}
-                />
+                </Route>
             </Route>
 
             {/* Unknown URLs redirect to Login */}

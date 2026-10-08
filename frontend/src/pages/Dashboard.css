@@ -1,0 +1,128 @@
+/* Dashboard.css */
+
+/* Main dashboard page */
+.dashboard-page {
+    width: 100%;
+}
+
+/* Dashboard heading section */
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.dashboard-header p {
+    margin: 0;
+    color: #666;
+    font-size: 15px;
+}
+
+/* Dashboard summary cards container */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+/* 
+ * Responsive dashboard layout.
+ *
+ * On medium-sized screens, display two cards per row.
+ */
+@media (max-width: 1024px) {
+
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/*
+ * Responsive dashboard layout for smaller screens.
+ *
+ * On mobile-sized screens, display one card per row.
+ */
+@media (max-width: 600px) {
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    /*
+     * Reduce heading size on smaller screens
+     * to maintain a clean layout.
+     */
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+}
+
+/* Individual dashboard card */
+.dashboard-card {
+    background: white;
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h3 {
+    margin: 0 0 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dashboard-card p {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+/*
+ * Dashboard secondary section.
+ *
+ * This section will later contain real workflow activity.
+ */
+.dashboard-section {
+    margin-top: 30px;
+}
+
+/* Section heading */
+.dashboard-section-header {
+    margin-bottom: 15px;
+}
+
+.dashboard-section-header h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+.dashboard-section-header p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/*
+ * Temporary activity container.
+ *
+ * Real activity data will be connected in a later feature.
+ */
+.activity-placeholder {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-placeholder p {
+    margin: 0;
+    color: #777;
+}
